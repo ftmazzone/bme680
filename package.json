@@ -1,0 +1,22 @@
+{
+  "name": "bme680-sensor",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/ftmazzone/bme680.git"
+  },
+  "keywords": [
+    "bme680"
+  ],
+  "author": "Florent Mazzone",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://gitlab.com/ftmazzone/bme680/issues"
+  },
+  "homepage": "https://gitlab.com/ftmazzone/bme680#README"
+}
