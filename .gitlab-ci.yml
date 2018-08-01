@@ -1,0 +1,16 @@
+image: node:8
+
+cache:
+  paths:
+   # - node_modules/
+  
+stages:
+   - build
+   # - test
+   # - quality
+   # - deploy
+  
+build:
+  stage: build
+  script:
+   - npm install

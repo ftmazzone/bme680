@@ -2,10 +2,8 @@
   "name": "bme680-sensor",
   "version": "0.1.0",
   "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "main": "./lib",
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://gitlab.com/ftmazzone/bme680.git"
@@ -18,5 +16,11 @@
   "bugs": {
     "url": "https://gitlab.com/ftmazzone/bme680/issues"
   },
-  "homepage": "https://gitlab.com/ftmazzone/bme680#README"
+  "homepage": "https://gitlab.com/ftmazzone/bme680#README",
+  "dependencies": {
+    "i2c": "^0.2.3"
+  },
+  "files": [
+    "lib/"
+  ]
 }
