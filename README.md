@@ -13,6 +13,45 @@ Node.js module for controlling [Bosch Sensortec BME680](https://ae-bst.resource.
 npm install bme680-sensor
 ```
 
+### Wiring
+
+| bme680 pin  | Raspberry Pi pin| Raspberry Pi GPIO|
+|-------------|:----------------|:-----------------|
+| VIN (3,3 V) | 1               |                  |
+| GND         | 6               |                  |
+| SDI         | 3               | 2                |
+| SCK         | 5               | 3                |
+
+
+
+## Available Methods
+
+### initialize
+
+Initialize the sensor.
+
+| Setting                | Default value|
+|------------------------|:-------------|
+| Temperature offset     | 0            |
+| Gas heater temperature | 320          |
+| Gas heater duration    | 150 ms       |
+| Gas heater profile     | 0            |
+
+Usage:
+```javascript
+'use strict';
+
+const { Bme680 } = require('bme680-sensor');
+const bme680 = new Bme680(1, 0x76);
+
+bme680.initialize().then(async () => {
+    console.info('Sensor initialized');
+    setInterval(async () => {
+        console.info(await bme680.getSensorData());
+    }, 3000);
+});
+```
+
 ## Credits
 
 * [BoschSensortec/BME680_driver](https://github.com/BoschSensortec/BME680_driver) to understand the i2C communication between the sensor and the controller - [Bosch Sensortec GmbH license](https://github.com/BoschSensortec/BME680_driver/blob/master/LICENSE)
