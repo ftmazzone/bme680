@@ -28,8 +28,8 @@
     "rewire": "^4.0.0"
   },
   "scripts": {
-    "test": "./node_modules/mocha/bin/_mocha '**/unitTests/*.js'",
-    "coverage": "node ./node_modules/nyc/bin/nyc.js ./node_modules/mocha/bin/_mocha '**/unitTests/*.js'"
+    "test": "./node_modules/mocha/bin/_mocha '**/unitTests/**/*.js'",
+    "coverage": "node ./node_modules/nyc/bin/nyc.js ./node_modules/mocha/bin/_mocha '**/unitTests/**/*.js'"
   },
   "engines": {
     "node": ">=8.11.0"
@@ -40,7 +40,7 @@
   "nyc": {
     "exclude": [
       "node_modules/**",
-      "tests/"
+      "examples/"
     ],
     "check-coverage": true,
     "all": true,
