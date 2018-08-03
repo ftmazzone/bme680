@@ -3,13 +3,14 @@
   "version": "0.1.4",
   "description": "",
   "main": "./lib",
-  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://gitlab.com/ftmazzone/bme680.git"
   },
   "keywords": [
-    "bme680"
+    "bme680",
+    "i2c",
+    "raspberry-pi"
   ],
   "author": "Florent Mazzone",
   "license": "MIT",
@@ -20,7 +21,39 @@
   "dependencies": {
     "i2c-bus": "^4.0.1"
   },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0",
+    "nyc": "^12.0.0",
+    "rewire": "^4.0.0"
+  },
+  "scripts": {
+    "test": "./node_modules/mocha/bin/_mocha '**/unitTests/*.js'",
+    "coverage": "node ./node_modules/nyc/bin/nyc.js ./node_modules/mocha/bin/_mocha '**/unitTests/*.js'"
+  },
+  "engines": {
+    "node": ">=8.11.0"
+  },
   "files": [
     "lib/"
-  ]
+  ],
+  "nyc": {
+    "exclude": [
+      "node_modules/**",
+      "tests/"
+    ],
+    "check-coverage": true,
+    "all": true,
+    "report-dir": ".nyc_output/reports",
+    "temp-directory": ".nyc_output/",
+    "reporter": [
+      "lcov",
+      "text-summary",
+      "html"
+    ],
+    "statements": 49,
+    "branches": 0,
+    "functions": 16,
+    "lines": 49
+  }
 }

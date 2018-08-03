@@ -6,14 +6,24 @@ cache:
   
 stages:
    - build
-   # - test
+   - test
    - quality
-   # - deploy
+   - deploy
   
 build:
   stage: build
   script:
    - npm install
+
+test:
+  before_script:
+   - npm install
+  script:
+   - npm run coverage
+  coverage: '/Branches.*?(\d+(?:\.\d+)?)%/'
+  artifacts:
+    paths:
+      - .nyc_output/reports/
 
 quality:
   stage: quality
@@ -39,3 +49,14 @@ dependency_scanning:
         "registry.gitlab.com/gitlab-org/security-products/dependency-scanning:$SP_VERSION" /code
   artifacts:
     paths: [gl-dependency-scanning-report.json]
+
+pages:
+  stage: deploy
+  script:
+    - mv .nyc_output/reports/ public/
+  artifacts:
+    paths:
+      - public
+    expire_in: 30 days
+  only:
+    - master
