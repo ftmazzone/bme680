@@ -40,7 +40,7 @@
   "nyc": {
     "exclude": [
       "node_modules/**",
-      "tests/"
+      "examples/"
     ],
     "check-coverage": true,
     "all": true,
