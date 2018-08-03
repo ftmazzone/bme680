@@ -3,6 +3,7 @@
 const assert = require('chai').assert;
 const rewire = require('rewire');
 const Bme680 = rewire('../../lib/bme680');
+
 const Constants = require('../../lib/constants');
 const constants = new Constants();
 
