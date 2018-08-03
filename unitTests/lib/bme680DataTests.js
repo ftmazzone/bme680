@@ -1,7 +1,7 @@
 'use strict';
 
 const assert = require('chai').assert;
-const Bme680Data = require('../lib/bme680Data');
+const Bme680Data = require('../../lib/bme680Data');
 
 describe('bme680Data', function () {
 
