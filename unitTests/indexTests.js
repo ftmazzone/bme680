@@ -9,10 +9,9 @@ describe('index', function () {
 
     describe("constructor", function () {
         it("Check that the class 'Bme680' is returned", function () {
-                   //Assert
-     console.log('libIndex',libIndex);
-assert.equal('Bme680',libIndex.Bme680.name);
-           
+            // Assert
+            assert.equal('Bme680', libIndex.Bme680.name);
+
         });
     });
 });
