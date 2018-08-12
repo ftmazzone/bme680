@@ -233,7 +233,7 @@ describe('Bme680', function () {
                 // Assert
                 assert.equal(constants.CHIP_ID_ADDR, chipIdAddressRead);
                 assert.equal(1, lengthRead);
-                assert.equal('BME680 Not Found. Invalid CHIP ID: 0',err.message);
+                assert.equal('BME680 Not Found. Invalid CHIP ID: 0', err.message);
             }
         });
     });
@@ -374,6 +374,101 @@ describe('Bme680', function () {
             assert.equal(0xe3, cmdWire);
         });
 
+    });
+
+    describe('getSensorData', function () {
+        it("Check that power mode 'FORCED_MODE' is activated and that data are correctly read", async function () {
+            //Prepare
+            let readByteCpt = 0;
+            Bme680.__set__("i2c", {
+                openSync: function (device) {
+                    assert.isNotNull(device);
+                    return {};
+                }
+            });
+
+            let powerModeSet;
+            const bme680 = new Bme680();
+            bme680.setPowerMode = async (powerMode) => {
+                powerModeSet = powerMode;
+            };
+
+            bme680.readByte = async (cmd, length) => {
+                readByteCpt++;
+                switch (cmd) {
+                    case constants.FIELD0_ADDR:
+                        if (constants.FIELD_LENGTH === length) {
+                            return Buffer.from([0x00, 0x00, 0x57, 0x94, 0xd0, 0x78, 0xaf, 0x20, 0x57, 0xec, 0x80, 0x00, 0x00, 0x92, 0xbc]);
+                        } else if (1 === readByteCpt) {
+                            return 0x00;
+                        }
+                        else {
+                            return constants.NEW_DATA_MSK;
+                        }
+                    default:
+                        return 0x00;
+                }
+
+            };
+
+            bme680.calibrationData = {
+                par_h1: 809,
+                par_h2: 1004,
+                par_h3: 0,
+                par_h4: 45,
+                par_h5: 20,
+                par_h6: 120,
+                par_h7: -100,
+                par_gh1: -33,
+                par_gh2: -8557,
+                par_gh3: 18,
+                par_t1: 26136,
+                par_t2: 26591,
+                par_t3: 3,
+                par_p1: 36266,
+                par_p2: -10358,
+                par_p3: 88,
+                par_p4: 6457,
+                par_p5: -41,
+                par_p6: 30,
+                par_p7: 43,
+                par_p8: -2742,
+                par_p9: -2558,
+                par_p10: 30,
+                t_fine: null,
+                res_heat_range: 1,
+                res_heat_val: 47,
+                range_sw_err: 0
+            };
+
+            //Act
+            const result = await bme680.getSensorData();
+
+            //Assert
+            assert.equal(powerModeSet, constants.FORCED_MODE);
+            assert.deepEqual({
+                "chip_id": null,
+                "dev_id": null,
+                "intf": null,
+                "mem_page": null,
+                "ambient_temperature": null,
+                "data":
+                {
+                    "status": 48, "heat_stable": true, "gas_index": 0, "meas_index": 0, "temperature": 0, "pressure": 970.56, "humidity": 46.456, "gas_resistance": 1850.91053748232
+                },
+                "calibration_data": {
+                    "par_h1": null, "par_h2": null, "par_h3": null, "par_h4": null, "par_h5": null, "par_h6": null, "par_h7": null, "par_gh1": null, "par_gh2": null, "par_gh3": null, "par_t1": null, "par_t2": null, "par_t3": null, "par_p1": null, "par_p2": null, "par_p3": null, "par_p4": null, "par_p5": null, "par_p6": null, "par_p7": null, "par_p8": null, "par_p9": null, "par_p10": null, "t_fine": null, "res_heat_range": null, "res_heat_val": null, "range_sw_err": null
+                },
+                "tph_settings": {
+                    "os_hum": null, "os_temp": null, "os_pres": null, "filter": null
+                },
+                "gas_settings": {
+                    "nb_conv": null, "heatr_ctrl": null, "run_gas": null, "heatr_temp": null, "heatr_dur": null
+                },
+                "power_mode": null,
+                "new_fields": null
+            }                , result);
+        });
     });
 
     describe('setBits', function () {
