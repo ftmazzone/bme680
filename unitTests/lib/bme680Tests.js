@@ -566,7 +566,7 @@ describe('Bme680', function () {
     });
 
     describe('calcHeaterDuration', function () {
-        it('Check maximum duration value.,async function()', async function () {
+        it('Check maximum duration value is set', async function () {
             // Prepare
             Bme680.__set__("i2c", {
                 openSync: function (device) {
@@ -661,6 +661,300 @@ describe('Bme680', function () {
 
             // Assert
             assert.equal("Profile \'11\' should be between 0 and 9", errorMessage);
+        });
+    });
+
+    describe('calcGasResistance', function () {
+        it('Check that calculated value is correct', async function () {
+            // Prepare
+            Bme680.__set__("i2c", {
+                openSync: function (device) {
+                    assert.isNotNull(device);
+                    return {};
+                }
+            });
+
+            const bme680 = new Bme680();
+            bme680.calibrationData = {
+                par_h1: 809,
+                par_h2: 1004,
+                par_h3: 0,
+                par_h4: 45,
+                par_h5: 20,
+                par_h6: 120,
+                par_h7: -100,
+                par_gh1: -33,
+                par_gh2: -8557,
+                par_gh3: 18,
+                par_t1: 26136,
+                par_t2: 26591,
+                par_t3: 3,
+                par_p1: 36266,
+                par_p2: -10358,
+                par_p3: 88,
+                par_p4: 6457,
+                par_p5: -41,
+                par_p6: 30,
+                par_p7: 43,
+                par_p8: -2742,
+                par_p9: -2558,
+                par_p10: 30,
+                t_fine: null,
+                res_heat_range: 1,
+                res_heat_val: 47,
+                range_sw_err: 0
+            };
+
+            // Act
+            const result = await bme680.calcGasResistance(506,9);
+
+            // Assert
+            assert.equal(15695.277361319342, result);
+        });
+    });
+
+    describe('calcHeaterResistance', function () {
+        it('Check that calculated value is correct', async function () {
+            // Prepare
+            Bme680.__set__("i2c", {
+                openSync: function (device) {
+                    assert.isNotNull(device);
+                    return {};
+                }
+            });
+
+            const bme680 = new Bme680();
+            bme680.ambient_temperature=20;
+            bme680.calibrationData = {
+                par_h1: 809,
+                par_h2: 1004,
+                par_h3: 0,
+                par_h4: 45,
+                par_h5: 20,
+                par_h6: 120,
+                par_h7: -100,
+                par_gh1: -33,
+                par_gh2: -8557,
+                par_gh3: 18,
+                par_t1: 26136,
+                par_t2: 26591,
+                par_t3: 3,
+                par_p1: 36266,
+                par_p2: -10358,
+                par_p3: 88,
+                par_p4: 6457,
+                par_p5: -41,
+                par_p6: 30,
+                par_p7: 43,
+                par_p8: -2742,
+                par_p9: -2558,
+                par_p10: 30,
+                t_fine: null,
+                res_heat_range: 1,
+                res_heat_val: 47,
+                range_sw_err: 0
+            };
+
+            // Act
+            const result = bme680.calcHeaterResistance(320);
+
+            // Assert
+            assert.equal(115.09189287210745, result);
+        });
+    });
+
+    describe('calcHumidity', function () {
+        it('Check that calculated value is correct', async function () {
+            // Prepare
+            Bme680.__set__("i2c", {
+                openSync: function (device) {
+                    assert.isNotNull(device);
+                    return {};
+                }
+            });
+
+            const bme680 = new Bme680();
+            bme680.calibrationData = {
+                par_h1: 809,
+                par_h2: 1004,
+                par_h3: 0,
+                par_h4: 45,
+                par_h5: 20,
+                par_h6: 120,
+                par_h7: -100,
+                par_gh1: -33,
+                par_gh2: -8557,
+                par_gh3: 18,
+                par_t1: 26136,
+                par_t2: 26591,
+                par_t3: 3,
+                par_p1: 36266,
+                par_p2: -10358,
+                par_p3: 88,
+                par_p4: 6457,
+                par_p5: -41,
+                par_p6: 30,
+                par_p7: 43,
+                par_p8: -2742,
+                par_p9: -2558,
+                par_p10: 30,
+                t_fine: null,
+                res_heat_range: 1,
+                res_heat_val: 47,
+                range_sw_err: 0
+            };
+
+            // Act
+            const result = await bme680.calcHumidity(22293);
+
+            // Assert
+            assert.equal(45195, result);
+        });
+    });
+
+    describe('calcPressure', function () {
+        it('Check that calculated value is correct', async function () {
+            // Prepare
+            Bme680.__set__("i2c", {
+                openSync: function (device) {
+                    assert.isNotNull(device);
+                    return {};
+                }
+            });
+
+            const bme680 = new Bme680();
+            bme680.calibrationData = {
+                par_h1: 809,
+                par_h2: 1004,
+                par_h3: 0,
+                par_h4: 45,
+                par_h5: 20,
+                par_h6: 120,
+                par_h7: -100,
+                par_gh1: -33,
+                par_gh2: -8557,
+                par_gh3: 18,
+                par_t1: 26136,
+                par_t2: 26591,
+                par_t3: 3,
+                par_p1: 36266,
+                par_p2: -10358,
+                par_p3: 88,
+                par_p4: 6457,
+                par_p5: -41,
+                par_p6: 30,
+                par_p7: 43,
+                par_p8: -2742,
+                par_p9: -2558,
+                par_p10: 30,
+                t_fine: null,
+                res_heat_range: 1,
+                res_heat_val: 47,
+                range_sw_err: 0
+            };
+
+            // Act
+            const result = await bme680.calcPressure(358733);
+
+            // Assert
+            assert.equal(97056, result);
+        });
+
+        it('Check that calculated value is correct (pressure_adc > 2146435072)', async function () {
+            // Prepare
+            Bme680.__set__("i2c", {
+                openSync: function (device) {
+                    assert.isNotNull(device);
+                    return {};
+                }
+            });
+
+            const bme680 = new Bme680();
+            bme680.calibrationData = {
+                par_h1: 809,
+                par_h2: 1004,
+                par_h3: 0,
+                par_h4: 45,
+                par_h5: 20,
+                par_h6: 120,
+                par_h7: -100,
+                par_gh1: -33,
+                par_gh2: -8557,
+                par_gh3: 18,
+                par_t1: 26136,
+                par_t2: 26591,
+                par_t3: 3,
+                par_p1: 36266,
+                par_p2: -10358,
+                par_p3: 88,
+                par_p4: 6457,
+                par_p5: -41,
+                par_p6: 30,
+                par_p7: 43,
+                par_p8: -2742,
+                par_p9: -2558,
+                par_p10: 30,
+                t_fine: null,
+                res_heat_range: 1,
+                res_heat_val: 47,
+                range_sw_err: 0
+            };
+
+            // Act
+            const result = await bme680.calcPressure(2146435073);
+
+            // Assert
+            assert.equal(-10899, result);
+        });
+    });
+
+    describe('calcTemperature', function () {
+        it('Check that calculated value is correct', async function () {
+            // Prepare
+            Bme680.__set__("i2c", {
+                openSync: function (device) {
+                    assert.isNotNull(device);
+                    return {};
+                }
+            });
+
+            const bme680 = new Bme680();
+            bme680.setTempOffset(0);
+            bme680.calibrationData = {
+                par_h1: 809,
+                par_h2: 1004,
+                par_h3: 0,
+                par_h4: 45,
+                par_h5: 20,
+                par_h6: 120,
+                par_h7: -100,
+                par_gh1: -33,
+                par_gh2: -8557,
+                par_gh3: 18,
+                par_t1: 26136,
+                par_t2: 26591,
+                par_t3: 3,
+                par_p1: 36266,
+                par_p2: -10358,
+                par_p3: 88,
+                par_p4: 6457,
+                par_p5: -41,
+                par_p6: 30,
+                par_p7: 43,
+                par_p8: -2742,
+                par_p9: -2558,
+                par_p10: 30,
+                t_fine: null,
+                res_heat_range: 1,
+                res_heat_val: 47,
+                range_sw_err: 0
+            };
+
+            // Act
+            const result = await bme680.calcTemperature(498068);
+
+            // Assert
+            assert.equal(2533, result);
         });
     });
 
