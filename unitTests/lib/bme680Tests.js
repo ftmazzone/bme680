@@ -706,7 +706,7 @@ describe('Bme680', function () {
             };
 
             // Act
-            const result = await bme680.calcGasResistance(506,9);
+            const result = await bme680.calcGasResistance(506, 9);
 
             // Assert
             assert.equal(15695.277361319342, result);
@@ -724,7 +724,7 @@ describe('Bme680', function () {
             });
 
             const bme680 = new Bme680();
-            bme680.ambient_temperature=20;
+            bme680.ambient_temperature = 20;
             bme680.calibrationData = {
                 par_h1: 809,
                 par_h2: 1004,
@@ -955,6 +955,44 @@ describe('Bme680', function () {
 
             // Assert
             assert.equal(2533, result);
+        });
+    });
+
+    describe('setTempOffset', function () {
+        it('Check that offset is correct when value is zero', async function () {
+            // Prepare
+            Bme680.__set__("i2c", {
+                openSync: function (device) {
+                    assert.isNotNull(device);
+                    return {};
+                }
+            });
+
+            const bme680 = new Bme680();
+
+            // Act
+            await bme680.setTempOffset(0);
+
+            //Assert
+            assert.equal(0, bme680.offset_temp_in_t_fine);
+        });
+
+        it('Check that offset is correct when value is different from zero', async function () {
+            // Prepare
+            Bme680.__set__("i2c", {
+                openSync: function (device) {
+                    assert.isNotNull(device);
+                    return {};
+                }
+            });
+
+            const bme680 = new Bme680();
+
+            // Act
+            await bme680.setTempOffset(2);
+
+            //Assert
+            assert.equal(2, bme680.offset_temp_in_t_fine);
         });
     });
 
