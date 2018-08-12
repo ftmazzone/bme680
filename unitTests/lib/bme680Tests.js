@@ -977,7 +977,7 @@ describe('Bme680', function () {
             assert.equal(0, bme680.offset_temp_in_t_fine);
         });
 
-        it('Check that offset is correct when value is different from zero', async function () {
+        it('Check that offset is correct when value is different from zero (value > 0)', async function () {
             // Prepare
             Bme680.__set__("i2c", {
                 openSync: function (device) {
@@ -992,7 +992,207 @@ describe('Bme680', function () {
             await bme680.setTempOffset(2);
 
             //Assert
-            assert.equal(2, bme680.offset_temp_in_t_fine);
+            assert.equal(10214, bme680.offset_temp_in_t_fine);
+        });
+
+        it('Check that offset is correct when value is different from zero (value < 0)', async function () {
+            // Prepare
+            Bme680.__set__("i2c", {
+                openSync: function (device) {
+                    assert.isNotNull(device);
+                    return {};
+                }
+            });
+
+            const bme680 = new Bme680();
+
+            // Act
+            await bme680.setTempOffset(-2);
+
+            //Assert
+            assert.equal(-10214, bme680.offset_temp_in_t_fine);
+        });
+    });
+
+    describe('setGasStatus', function () {
+        it('Check that the value is set', async function () {
+
+            //Prepare
+            let deviceId, registerSet, maskSet, postionSet, valueSet;
+            Bme680.__set__("i2c", {
+                openSync: function (device) {
+                    deviceId = device;
+                }
+            });
+
+            const bme680 = new Bme680();
+            bme680.setBits = async (register, mask, position, value) => {
+                registerSet = register;
+                maskSet = mask;
+                postionSet = position;
+                valueSet = value;
+            };
+
+            //Act
+            await bme680.setGasStatus(5);
+
+            //Assert
+            assert.equal(1, deviceId);
+            assert.equal(0x71, registerSet);
+            assert.equal(0x10, maskSet);
+            assert.equal(0x04, postionSet);
+            assert.equal(0x05, valueSet);
+        });
+    });
+
+    describe('setFilter', function () {
+        it('Check that the value is set', async function () {
+
+            //Prepare
+            let deviceId, registerSet, maskSet, postionSet, valueSet;
+            Bme680.__set__("i2c", {
+                openSync: function (device) {
+                    deviceId = device;
+                }
+            });
+
+            const bme680 = new Bme680();
+            bme680.setBits = async (register, mask, position, value) => {
+                registerSet = register;
+                maskSet = mask;
+                postionSet = position;
+                valueSet = value;
+            };
+
+            //Act
+            await bme680.setFilter(5);
+
+            //Assert
+            assert.equal(1, deviceId);
+            assert.equal(117, registerSet);
+            assert.equal(28, maskSet);
+            assert.equal(0x02, postionSet);
+            assert.equal(0x05, valueSet);
+        });
+    });
+
+    describe('setHumidityOversample', function () {
+        it('Check that the value is set', async function () {
+
+            //Prepare
+            let deviceId, registerSet, maskSet, postionSet, valueSet;
+            Bme680.__set__("i2c", {
+                openSync: function (device) {
+                    deviceId = device;
+                }
+            });
+
+            const bme680 = new Bme680();
+            bme680.setBits = async (register, mask, position, value) => {
+                registerSet = register;
+                maskSet = mask;
+                postionSet = position;
+                valueSet = value;
+            };
+
+            //Act
+            await bme680.setHumidityOversample(5);
+
+            //Assert
+            assert.equal(1, deviceId);
+            assert.equal(114, registerSet);
+            assert.equal(0x07, maskSet);
+            assert.equal(0x00, postionSet);
+            assert.equal(0x05, valueSet);
+        });
+    });
+
+    describe('setPressureOversample', function () {
+        it('Check that the value is set', async function () {
+
+            //Prepare
+            let deviceId, registerSet, maskSet, postionSet, valueSet;
+            Bme680.__set__("i2c", {
+                openSync: function (device) {
+                    deviceId = device;
+                }
+            });
+
+            const bme680 = new Bme680();
+            bme680.setBits = async (register, mask, position, value) => {
+                registerSet = register;
+                maskSet = mask;
+                postionSet = position;
+                valueSet = value;
+            };
+
+            //Act
+            await bme680.setPressureOversample(5);
+
+            //Assert
+            assert.equal(1, deviceId);
+            assert.equal(116, registerSet);
+            assert.equal(28, maskSet);
+            assert.equal(0x02, postionSet);
+            assert.equal(0x05, valueSet);
+        });
+    });
+
+    describe('setTemperatureOversample', function () {
+        it('Check that the value is set', async function () {
+
+            //Prepare
+            let deviceId, registerSet, maskSet, postionSet, valueSet;
+            Bme680.__set__("i2c", {
+                openSync: function (device) {
+                    deviceId = device;
+                }
+            });
+
+            const bme680 = new Bme680();
+            bme680.setBits = async (register, mask, position, value) => {
+                registerSet = register;
+                maskSet = mask;
+                postionSet = position;
+                valueSet = value;
+            };
+
+            //Act
+            await bme680.setTemperatureOversample(5);
+
+            //Assert
+            assert.equal(1, deviceId);
+            assert.equal(116, registerSet);
+            assert.equal(224, maskSet);
+            assert.equal(0x05, postionSet);
+            assert.equal(0x05, valueSet);
+        });
+    });
+
+    describe('getTemperatureOversample', function () {
+        it('Check that the value is read', async function () {
+
+            //Prepare
+            let deviceId, cmdRead, maskSet, postionSet, valueSet;
+            Bme680.__set__("i2c", {
+                openSync: function (device) {
+                    deviceId = device;
+                }
+            });
+
+            const bme680 = new Bme680();
+            bme680.readByte = async (cmd) => {
+                cmdRead = cmd;
+                return 0x05;
+            };
+
+            //Act
+          const result=  await bme680.getTemperatureOversample();
+
+            //Assert
+            assert.equal(1, deviceId);
+            assert.equal(116, cmdRead);
+            assert.equal(0x05, result);
         });
     });
 
