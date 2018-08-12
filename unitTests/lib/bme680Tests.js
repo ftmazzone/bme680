@@ -9,8 +9,6 @@ const constants = new Constants();
 
 describe('Bme680', function () {
 
-    console.error = () => { };
-
     describe("constructor", function () {
         it('Check that input parameters are used', function () {
 
@@ -358,7 +356,6 @@ describe('Bme680', function () {
                 }
             });
 
-
             const bme680 = new Bme680();
 
             //Act
@@ -405,10 +402,7 @@ describe('Bme680', function () {
                         else {
                             return constants.NEW_DATA_MSK;
                         }
-                    default:
-                        return 0x00;
                 }
-
             };
 
             bme680.calibrationData = {
@@ -467,7 +461,127 @@ describe('Bme680', function () {
                 },
                 "power_mode": null,
                 "new_fields": null
-            }                , result);
+            }, result);
+        });
+    });
+
+    describe('setGasHeaterDuration', function () {
+        it('Check that the duration of the gas heater is set', async function () {
+            // Prepare
+            let cmdWritten, byteWritten;
+            Bme680.__set__("i2c", {
+                openSync: function (device) {
+                    assert.isNotNull(device);
+                    return {};
+                }
+            });
+            const bme680 = new Bme680();
+            bme680.writeByte = async (cmd, byte) => {
+                cmdWritten = cmd;
+                byteWritten = byte;
+            };
+
+            // Act
+            await bme680.setGasHeaterDuration(150);
+
+            // Assert
+            assert.equal(100, cmdWritten);
+            assert.equal(101, byteWritten);
+        });
+
+        it('Check that an exception is thrown for an invalid nb profile', async function () {
+            // Prepare
+            let errorMessage;
+            Bme680.__set__("i2c", {
+                openSync: function (device) {
+                    assert.isNotNull(device);
+                    return {};
+                }
+            });
+            const bme680 = new Bme680();
+
+            // Act
+            try {
+                await bme680.setGasHeaterDuration(150, 11);
+            }
+            catch (err) {
+                errorMessage = err.message;
+            }
+
+            // Assert
+            assert.equal("Profile \'11\' should be between 0 and 9", errorMessage);
+        });
+    });
+
+    describe('selectGasHeaterProfile', function () {
+        it('Check that the profile of the gas heater is selected', async function () {
+            // Prepare
+            let registerSet, maskSet, positionSet, valueSet;
+            Bme680.__set__("i2c", {
+                openSync: function (device) {
+                    assert.isNotNull(device);
+                    return {};
+                }
+            });
+            const bme680 = new Bme680();
+            bme680.setBits = async (register, mask, position, value) => {
+                registerSet = register;
+                maskSet = mask;
+                positionSet = position;
+                valueSet = value;
+            };
+
+            // Act
+            await bme680.selectGasHeaterProfile(7);
+
+            // Assert
+            assert.equal(113, registerSet);
+            assert.equal(15, maskSet);
+            assert.equal(0, positionSet);
+            assert.equal(7, valueSet);
+        });
+
+        it('Check that an exception is thrown for an invalid nb profile', async function () {
+            // Prepare
+            let errorMessage;
+            Bme680.__set__("i2c", {
+                openSync: function (device) {
+                    assert.isNotNull(device);
+                    return {};
+                }
+            });
+            const bme680 = new Bme680();
+
+            // Act
+            try {
+                await bme680.selectGasHeaterProfile(12);
+            }
+            catch (err) {
+                errorMessage = err.message;
+            }
+
+            // Assert
+            assert.equal("Profile \'12\' should be between 0 and 9", errorMessage);
+        });
+    });
+
+    describe('calcHeaterDuration', function () {
+        it('Check maximum duration value.,async function()', async function () {
+            // Prepare
+            Bme680.__set__("i2c", {
+                openSync: function (device) {
+                    assert.isNotNull(device);
+                    return {};
+                }
+            });
+
+            const bme680 = new Bme680();
+
+            // Act
+            const result = bme680.calcHeaterDuration(4200);
+
+            // Assert
+            assert.equal(0xff, result);
         });
     });
 

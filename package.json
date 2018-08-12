@@ -51,9 +51,9 @@
       "text-summary",
       "html"
     ],
-    "statements": 81,
-    "branches": 40,
-    "functions": 74,
-    "lines": 81
+    "statements": 90,
+    "branches": 67,
+    "functions": 86,
+    "lines": 92
   }
 }
