@@ -1173,7 +1173,7 @@ describe('Bme680', function () {
         it('Check that the value is read', async function () {
 
             //Prepare
-            let deviceId, cmdRead, maskSet, postionSet, valueSet;
+            let deviceId, cmdRead;
             Bme680.__set__("i2c", {
                 openSync: function (device) {
                     deviceId = device;
@@ -1310,6 +1310,145 @@ describe('Bme680', function () {
             assert.equal(116, cmdRead);
             assert.equal(0x01, result);
         });
+    });
+
+    describe('setPowerMode', function () {
+        it('Check that an exception if thrown in case of invalid power mode', async function () {
+            // Prepare
+            let deviceId, errorMessage;
+            Bme680.__set__("i2c", {
+                openSync: function (device) {
+                    deviceId = device;
+                }
+            });
+
+            const bme680 = new Bme680();
+
+            // Act
+            try {
+                await bme680.setPowerMode(0x23);
+            }
+            catch (err) {
+                errorMessage = err.message;
+            }
+
+            // Assert
+            assert.equal(1, deviceId);
+            assert.equal('Power mode should be one of SLEEP_MODE or FORCED_MODE', errorMessage);
+        });
+
+        it("Check that the 'power mode' setting is updated", async function () {
+            // Prepare
+            let deviceId, registerSet, maskSet, positionSet, valueSet;
+            let getPowerModeCalled = false;
+            Bme680.__set__("i2c", {
+                openSync: function (device) {
+                    deviceId = device;
+                }
+            });
+
+            const bme680 = new Bme680();
+            bme680.setBits = async (register, mask, position, value) => {
+                registerSet = register;
+                maskSet = mask;
+                positionSet = position;
+                valueSet = value;
+            };
+
+            bme680.getPowerMode = async () => {
+                getPowerModeCalled = true;
+                return 0x23;
+            };
+
+            // Act
+            await bme680.setPowerMode(constants.FORCED_MODE);
+
+            // Assert
+            assert.equal(1, deviceId);
+            assert.equal(116, registerSet);
+            assert.equal(3, maskSet);
+            assert.equal(0, positionSet);
+            assert.equal(1, valueSet);
+            assert.isTrue(getPowerModeCalled);
+        });
+
+        it("Check that the 'power mode' setting is updated (blocking = true)", async function () {
+            // Prepare
+            let deviceId, registerSet, maskSet, positionSet, valueSet;
+            let getPowerModeCalled = false;
+            Bme680.__set__("i2c", {
+                openSync: function (device) {
+                    deviceId = device;
+                }
+            });
+
+            const bme680 = new Bme680();
+            bme680.setBits = async (register, mask, position, value) => {
+                registerSet = register;
+                maskSet = mask;
+                positionSet = position;
+                valueSet = value;
+            };
+
+            bme680.getPowerMode = async () => {
+                getPowerModeCalled = true;
+                return 0x01;
+            };
+
+            // Act
+            await bme680.setPowerMode(constants.FORCED_MODE, true);
+
+            // Assert
+            assert.equal(1, deviceId);
+            assert.equal(116, registerSet);
+            assert.equal(3, maskSet);
+            assert.equal(0, positionSet);
+            assert.equal(1, valueSet);
+            assert.isTrue(getPowerModeCalled);
+        });
+
+        it(`Check that an exception is thrown if the power mode is not updated
+         after a certain amount of time (blocking = true)`, async function () {
+                // Prepare
+                let deviceId, registerSet, maskSet, positionSet, valueSet, errorMessage;
+                let getPowerModeCalled = false;
+
+                Bme680.__set__("i2c", {
+                    openSync: function (device) {
+                        deviceId = device;
+                    }
+                });
+
+                const bme680 = new Bme680();
+
+                bme680.setBits = async (register, mask, position, value) => {
+                    registerSet = register;
+                    maskSet = mask;
+                    positionSet = position;
+                    valueSet = value;
+                };
+
+                bme680.getPowerMode = async () => {
+                    getPowerModeCalled = true;
+                    return 0x00;
+                };
+
+                // Act
+                try {
+                    await bme680.setPowerMode(constants.FORCED_MODE, true, 100);
+                }
+                catch (err) {
+                    errorMessage = err.message;
+                }
+                // Assert
+                assert.equal(1, deviceId);
+                assert.equal(116, registerSet);
+                assert.equal(3, maskSet);
+                assert.equal(0, positionSet);
+                assert.equal(1, valueSet);
+                assert.isTrue(getPowerModeCalled);
+                assert.equal('Power mode could not be updated after a delay of 110 ms', errorMessage);
+            });
     });
 
     describe('setBits', function () {
