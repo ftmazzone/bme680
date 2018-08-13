@@ -1187,7 +1187,7 @@ describe('Bme680', function () {
             };
 
             //Act
-          const result=  await bme680.getTemperatureOversample();
+            const result = await bme680.getTemperatureOversample();
 
             //Assert
             assert.equal(1, deviceId);
@@ -1195,6 +1195,67 @@ describe('Bme680', function () {
             assert.equal(0x05, result);
         });
     });
+
+    describe('getCalibrationData', function () {
+        it('Check that the calibration data initialisation is successful', async function () {
+            // Prepare
+            let deviceId;
+            Bme680.__set__("i2c", {
+                openSync: function (device) {
+                    deviceId = device;
+                    return {};
+                }
+            });
+
+            let lengthCoeffAddr1, lengthCoeffAddr2, lengthResHeatRangeAddr, lengthResHeatValAddr, lengthAddrRangeSwErrAddr;
+
+            const bme680 = new Bme680();
+            bme680.readByte = (register, length) => {
+                let value;
+                switch (register) {
+                    case constants.COEFF_ADDR1:
+                        lengthCoeffAddr1 = length;
+                        value = Buffer.from([0x00, 0xdf, 0x67, 0x03, 0xef, 0xaa, 0x8d, 0x8a, 0xd7, 0x58, 0xff, 0x39, 0x19, 0xd7, 0xff, 0x2b, 0x1e, 0x00, 0x00, 0x4a, 0xf5, 0x02, 0xf6, 0x1e, 0x01]);
+                        break;
+                    case constants.COEFF_ADDR2:
+                        lengthCoeffAddr2 = length;
+                        value = Buffer.from([0x3e, 0xc9, 0x32, 0x00, 0x2d, 0x14, 0X78, 0x9c, 0x18, 0x66, 0x93, 0xde, 0xdf, 0x12, 0x82, 0x00]);
+                        break;
+
+                    case constants.ADDR_RES_HEAT_RANGE_ADDR:
+                        lengthResHeatRangeAddr = length;
+                        value = 22;
+                        break;
+                    case constants.ADDR_RES_HEAT_VAL_ADDR:
+                        lengthResHeatValAddr = length;
+                        value = 47;
+                        break;
+                    case constants.ADDR_RANGE_SW_ERR_ADDR:
+                        lengthAddrRangeSwErrAddr = length;
+                        value = 3;
+                        break;
+                }
+                return value;
+            };
+            // Act
+            await bme680.getCalibrationData();
+            // Assert
+            assert.equal(1, deviceId);
+            assert.equal(constants.COEFF_ADDR1_LEN, lengthCoeffAddr1);
+            assert.equal(constants.COEFF_ADDR2_LEN, lengthCoeffAddr2);
+            assert.equal(1, lengthResHeatRangeAddr);
+            assert.equal(1, lengthResHeatValAddr);
+            assert.equal(1, lengthAddrRangeSwErrAddr);
+            assert.deepEqual({
+                "par_h1": 809,
+                "par_h2": 1004, "par_h3": 0, "par_h4": 45, "par_h5": 20,
+                "par_h6": 120, "par_h7": -100, "par_gh1": -33, "par_gh2": -8557, "par_gh3": 18, "par_t1": 26136, "par_t2": 26591, "par_t3": 3, "par_p1": 36266,
+                "par_p2": -10358, "par_p3": 88, "par_p4": 6457, "par_p5": -41, "par_p6": 30, "par_p7": 43, "par_p8": -2742, "par_p9": -2558, "par_p10": 30,
+                "t_fine": null, "res_heat_range": 1, "res_heat_val": 47, "range_sw_err": 0
+            }, bme680.calibrationData);
+        });
+    });
+
 
     describe('setBits', function () {
         it('Check that the value is set', async function () {
