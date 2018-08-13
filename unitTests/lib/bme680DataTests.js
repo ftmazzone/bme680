@@ -5,8 +5,6 @@ const Bme680Data = require('../../lib/bme680Data');
 
 describe('bme680Data', function () {
 
-    console.error = () => { };
-
     describe("constructor", function () {
         it('Check that parameters are saved', function () {
             //Act
