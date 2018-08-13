@@ -1256,6 +1256,61 @@ describe('Bme680', function () {
         });
     });
 
+    describe('softReset', function () {
+        it('Check that the value is set', async function () {
+            // Prepare
+            let deviceId, cmdWritten, valueWritten;
+            Bme680.__set__("i2c", {
+                openSync: function (device) {
+                    deviceId = device;
+                }
+            });
+
+            const bme680 = new Bme680();
+            bme680.writeByte = async (cmd, value) => {
+                cmdWritten = cmd;
+                valueWritten = value;
+            };
+
+            // Act
+            const timeStampStart = new Date();
+            await bme680.softReset();
+            const timeStampEnd = new Date();
+
+            // Assert
+            assert.equal(1, deviceId);
+            assert.equal(224, cmdWritten);
+            assert.equal(182, valueWritten);
+            assert.isAtMost(constants.RESET_PERIOD, (timeStampEnd.getTime() - timeStampStart.getTime()));
+        });
+    });
+
+    describe('getPowerMode', function () {
+        it('Check that the value is read', async function () {
+
+            //Prepare
+            let deviceId, cmdRead;
+            Bme680.__set__("i2c", {
+                openSync: function (device) {
+                    deviceId = device;
+                }
+            });
+
+            const bme680 = new Bme680();
+            bme680.readByte = async (cmd) => {
+                cmdRead = cmd;
+                return constants.FORCED_MODE;
+            };
+
+            //Act
+            const result = await bme680.getPowerMode();
+
+            //Assert
+            assert.equal(1, deviceId);
+            assert.equal(116, cmdRead);
+            assert.equal(0x01, result);
+        });
+    });
 
     describe('setBits', function () {
         it('Check that the value is set', async function () {
@@ -1286,6 +1341,7 @@ describe('Bme680', function () {
             await bme680.setBits(constants.CONF_ODR_RUN_GAS_NBC_ADDR, constants.NBCONV_MSK, constants.NBCONV_POS, 10);
 
             //Assert
+            assert.equal(1, deviceId);
             assert.equal(113, registerRead);
             assert.equal(1, lengthRead);
             assert.equal(113, registerWrite);
