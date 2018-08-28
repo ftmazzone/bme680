@@ -1409,8 +1409,8 @@ describe('Bme680', function () {
             assert.isTrue(getPowerModeCalled);
         });
 
-        it(`Check that an exception is thrown if the power mode is not updated
-         after a certain amount of time (blocking = true)`, async function () {
+        it('Check that an exception is thrown if the power mode is not updated ' +
+            'after a certain amount of time (blocking = true)', async function () {
                 // Prepare
                 let deviceId, registerSet, maskSet, positionSet, valueSet, errorMessage;
                 let getPowerModeCalled = false;
