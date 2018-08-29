@@ -1449,7 +1449,7 @@ describe('Bme680', function () {
                 assert.equal(0, positionSet);
                 assert.equal(1, valueSet);
                 assert.isTrue(getPowerModeCalled);
-                assert.equal('Power mode could not be updated after a delay of 110 ms', errorMessage);
+                assert.equal('Power mode could not be updated after a delay of 100 ms', errorMessage);
             });
     });
 
