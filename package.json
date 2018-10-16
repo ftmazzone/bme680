@@ -1,6 +1,6 @@
 {
   "name": "bme680-sensor",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "",
   "main": "./lib",
   "repository": {
@@ -19,12 +19,12 @@
   },
   "homepage": "https://gitlab.com/ftmazzone/bme680#README",
   "dependencies": {
-    "i2c-bus": "^4.0.1"
+    "i2c-bus": "^4.0.5"
   },
   "devDependencies": {
-    "chai": "^4.1.2",
+    "chai": "^4.2.0",
     "mocha": "^5.2.0",
-    "nyc": "^13.0.0",
+    "nyc": "^13.1.0",
     "rewire": "^4.0.0"
   },
   "scripts": {
