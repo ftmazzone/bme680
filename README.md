@@ -33,8 +33,8 @@ Initialize the sensor.
 
 | Setting                | Default value|
 |------------------------|:-------------|
-| Temperature offset     | 0            |
-| Gas heater temperature | 320          |
+| Temperature offset     | 0 °C         |
+| Gas heater temperature | 320 °C       |
 | Gas heater duration    | 150 ms       |
 | Gas heater profile     | 0            |
 
