@@ -19,7 +19,7 @@
   },
   "homepage": "https://gitlab.com/ftmazzone/bme680#README",
   "dependencies": {
-    "i2c-bus": "^4.0.5"
+    "i2c-bus": "^4.0.7"
   },
   "devDependencies": {
     "chai": "^4.2.0",
