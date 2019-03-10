@@ -22,11 +22,11 @@ describe('Bme680', function () {
             });
 
             //Act
-            const bme680 = new Bme680(2, 0x77);
+            const bme680 = new Bme680(0, 0x77);
 
             //Assert
             assert.equal(0x77, bme680.i2cAddress);
-            assert.equal(2, deviceId);
+            assert.equal(0, deviceId);
 
         });
 
