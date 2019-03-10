@@ -1,6 +1,6 @@
 {
   "name": "bme680-sensor",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "",
   "main": "./lib",
   "repository": {
@@ -19,20 +19,21 @@
   },
   "homepage": "https://gitlab.com/ftmazzone/bme680#README",
   "dependencies": {
-    "i2c-bus": "^4.0.7"
+    "i2c-bus": "^4.0.8"
   },
   "devDependencies": {
     "chai": "^4.2.0",
-    "mocha": "^5.2.0",
-    "nyc": "^13.1.0",
+    "mocha": "^6.0.2",
+    "nyc": "^13.3.0",
     "rewire": "^4.0.0"
   },
   "scripts": {
-    "test": "./node_modules/mocha/bin/_mocha '**/unitTests/**/*.js'",
-    "coverage": "node ./node_modules/nyc/bin/nyc.js ./node_modules/mocha/bin/_mocha '**/unitTests/**/*.js'"
+    "test": "npx mocha '**/unitTests/**/*.js'",
+    "coverage": "npx nyc mocha '**/unitTests/**/*.js'",
+    "testSensor": "node ./examples/readSensor.js"
   },
   "engines": {
-    "node": ">=8.11.0"
+    "node": ">=10.15.3"
   },
   "files": [
     "lib/"
