@@ -4,7 +4,7 @@ Node.js module for controlling [Bosch Sensortec BME680](https://ae-bst.resource.
 
 [![pipeline status](https://gitlab.com/ftmazzone/bme680/badges/master/pipeline.svg)](https://gitlab.com/ftmazzone/bme680/commits/master)
 [![coverage report](https://gitlab.com/ftmazzone/bme680/badges/master/coverage.svg)](https://gitlab.com/ftmazzone/bme680/commits/master)
-[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=BME680&metric=alert_status&style=flat-square)](https://sonarcloud.io/dashboard?id=BME680)
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=ftmazzone_BME680&metric=alert_status&style=flat-square)](https://sonarcloud.io/dashboard?id=ftmazzone_BME680)
 
 
 
