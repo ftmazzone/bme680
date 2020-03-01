@@ -43,9 +43,9 @@ quality:
      - .sonar/cache
   script:
      - sonar-scanner
-#  only:
-#     - master
-#     - merge_requests
+  only:
+     - master
+     - merge_requests
 
 pages:
   stage: deploy
