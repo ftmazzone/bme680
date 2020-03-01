@@ -1,6 +1,6 @@
 {
   "name": "bme680-sensor",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "",
   "main": "./lib",
   "repository": {
