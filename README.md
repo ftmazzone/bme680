@@ -1,6 +1,6 @@
 # bme680
 
-Node.js module for controlling [Bosch Sensortec BME680](https://ae-bst.resource.bosch.com/media/_tech/media/datasheets/BST-BME680-DS001-00.pdf) sensors.
+Node.js module for controlling Bosch Sensortec [BME680](https://ae-bst.resource.bosch.com/media/_tech/media/datasheets/BST-BME680-DS001-00.pdf) and [BME688](https://www.bosch-sensortec.com/products/environmental-sensors/gas-sensors/bme688/) sensors.
 
 [![pipeline status](https://gitlab.com/ftmazzone/bme680/badges/master/pipeline.svg)](https://gitlab.com/ftmazzone/bme680/commits/master)
 [![coverage report](https://gitlab.com/ftmazzone/bme680/badges/master/coverage.svg)](https://gitlab.com/ftmazzone/bme680/commits/master)
@@ -11,7 +11,7 @@ Node.js module for controlling [Bosch Sensortec BME680](https://ae-bst.resource.
 ## Installation
 
 ```sh
-npm install bme680-sensor
+npm install github:CHH/bme680
 ```
 
 ### Wiring
@@ -23,7 +23,10 @@ npm install bme680-sensor
 | SDI         | 3               | 2                |
 | SCK         | 5               | 3                |
 
+### BME688 support
 
+The changes in the Pimoroni Python library regarding the BME688 variant have been backported to this library. The variant is automatically detected by retrieving it from the I2C address and a different gas measurement calulcation
+is used.
 
 ## Available Methods
 
