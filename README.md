@@ -1,6 +1,6 @@
 # bme680
 
-Node.js module for controlling [Bosch Sensortec BME680](https://ae-bst.resource.bosch.com/media/_tech/media/datasheets/BST-BME680-DS001-00.pdf) sensors.
+Node.js module for controlling [Bosch Sensortec BME680](https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme680-ds001.pdf) sensors.
 
 [![pipeline status](https://gitlab.com/ftmazzone/bme680/badges/master/pipeline.svg)](https://gitlab.com/ftmazzone/bme680/commits/master)
 [![coverage report](https://gitlab.com/ftmazzone/bme680/badges/master/coverage.svg)](https://gitlab.com/ftmazzone/bme680/commits/master)
