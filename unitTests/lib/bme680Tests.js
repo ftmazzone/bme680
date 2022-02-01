@@ -1177,9 +1177,9 @@ describe('Bme680', function () {
             //Assert
             assert.equal(1, deviceId);
             assert.equal(0x71, registerSet);
-            assert.equal(0x10, maskSet);
+            assert.equal(0x30, maskSet);
             assert.equal(0x04, postionSet);
-            assert.equal(0x05, valueSet);
+            assert.equal(0x01, valueSet);
         });
 
         it('Check that the value is set if no chip specific setting is provided - bme688', async function () {
@@ -1236,9 +1236,9 @@ describe('Bme680', function () {
             //Assert
             assert.equal(1, deviceId);
             assert.equal(0x71, registerSet);
-            assert.equal(0x10, maskSet);
+            assert.equal(0x30, maskSet);
             assert.equal(0x04, postionSet);
-            assert.equal(0x05, valueSet);
+            assert.equal(0x01, valueSet);
         });
     });
 
