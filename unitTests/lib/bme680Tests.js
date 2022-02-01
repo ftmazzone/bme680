@@ -509,7 +509,7 @@ describe('Bme680', function () {
     });
 
     describe('getSensorData', function () {
-        it("Check that power mode 'FORCED_MODE' is activated and that data are correctly read", async function () {
+        it("Check that power mode 'FORCED_MODE' is activated and that data are correctly read - bme680", async function () {
             //Prepare
             let readByteCpt = 0;
             Bme680.__set__("i2c", {
@@ -577,9 +577,9 @@ describe('Bme680', function () {
 
             //Assert
             assert.equal(powerModeSet, constants.FORCED_MODE);
-            assert.deepEqual({
+            assert.deepEqual(result,{
                 chip_id: 97,
-                chip_variant: 1,
+                chip_variant: 0x00,
                 dev_id: null,
                 intf: null,
                 mem_page: null,
@@ -599,7 +599,101 @@ describe('Bme680', function () {
                 },
                 power_mode: null,
                 new_fields: null
-            }, result);
+            });
+        });
+
+        it("Check that power mode 'FORCED_MODE' is activated and that data are correctly read - bme688", async function () {
+            //Prepare
+            let readByteCpt = 0;
+            Bme680.__set__("i2c", {
+                openSync: function (device) {
+                    assert.isNotNull(device);
+                    return {};
+                }
+            });
+
+            let powerModeSet;
+            const bme680 = new Bme680();
+            bme680.chip_variant = 0x01;
+            bme680.setPowerMode = async (powerMode) => {
+                powerModeSet = powerMode;
+            };
+
+            bme680.readByte = async (cmd, length) => {
+                readByteCpt++;
+                switch (cmd) {
+                    case constants.FIELD0_ADDR:
+                        if (constants.FIELD_LENGTH === length) {
+                            return Buffer.from([0x00, 0x00, 0x57, 0x94, 0xd0, 0x78, 0xaf, 0x20, 0x57, 0xec, 0x80, 0x00, 0x00, 0x92, 0xbc]);
+                        } else if (1 === readByteCpt) {
+                            return 0x00;
+                        }
+                        else {
+                            return constants.NEW_DATA_MSK;
+                        }
+                }
+            };
+
+            bme680.calibrationData = {
+                par_h1: 809,
+                par_h2: 1004,
+                par_h3: 0,
+                par_h4: 45,
+                par_h5: 20,
+                par_h6: 120,
+                par_h7: -100,
+                par_gh1: -33,
+                par_gh2: -8557,
+                par_gh3: 18,
+                par_t1: 26136,
+                par_t2: 26591,
+                par_t3: 3,
+                par_p1: 36266,
+                par_p2: -10358,
+                par_p3: 88,
+                par_p4: 6457,
+                par_p5: -41,
+                par_p6: 30,
+                par_p7: 43,
+                par_p8: -2742,
+                par_p9: -2558,
+                par_p10: 30,
+                t_fine: 124908,
+                res_heat_range: 1,
+                res_heat_val: 47,
+                range_sw_err: 0
+            };
+
+            bme680.setTempOffset(0);
+
+            //Act
+            const result = await bme680.getSensorData();
+
+            //Assert
+            assert.equal(powerModeSet, constants.FORCED_MODE);
+            assert.deepEqual(result,{
+                chip_id: 97,
+                chip_variant: 0x01,
+                dev_id: null,
+                intf: null,
+                mem_page: null,
+                ambient_temperature: 2414,
+                data:
+                {
+                    status: 48, heat_stable: true, gas_index: 0, meas_index: 0, temperature: 24.14, pressure: 1008.8, humidity: 49.072, gas_resistance: 1850.91053748232
+                },
+                calibration_data: {
+                    par_h1: 809, par_h2: 1004, par_h3: 0, par_h4: 45, par_h5: 20, par_h6: 120, par_h7: -100, par_gh1: -33, par_gh2: -8557, par_gh3: 18, par_t1: 26136, par_t2: 26591, par_t3: 3, par_p1: 36266, par_p2: -10358, par_p3: 88, par_p4: 6457, par_p5: -41, par_p6: 30, par_p7: 43, par_p8: -2742, par_p9: -2558, par_p10: 30, t_fine: 123596, res_heat_range: 1, res_heat_val: 47, range_sw_err: 0
+                },
+                tph_settings: {
+                    os_hum: null, os_temp: null, os_pres: null, filter: null
+                },
+                gas_settings: {
+                    nb_conv: null, heatr_ctrl: null, run_gas: null, heatr_temp: null, heatr_dur: null
+                },
+                power_mode: null,
+                new_fields: null
+            });
         });
     });
 
