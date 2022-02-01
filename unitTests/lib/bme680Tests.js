@@ -123,9 +123,9 @@ describe('Bme680', function () {
     });
 
     describe('initialize', function () {
-        it('Check that all initialization methods are called', async function () {
+        it('Check that all initialization methods are called - bme680', async function () {
             // Prepare
-            let chipIdAddressRead, lengthRead, softResetTriggered, powerModeSet, calibrationDataGet;
+            let chipIdAddressRead, chipVariantAddressRead, lengthRead, softResetTriggered, powerModeSet, calibrationDataGet;
             let humidityOversampleSet, pressureOversampleSet, temperatureOversampleSet, filterSet;
             let gasStatusSet, tempOffsetSet, sensorDataGet, gasHeaterTemperatureSet, gasHeaterDurationSet, gasHeaterProfileSelected;
 
@@ -137,10 +137,17 @@ describe('Bme680', function () {
             });
             const bme680 = new Bme680();
 
-            bme680.readByte = async function (chipIdAddress, length) {
-                chipIdAddressRead = chipIdAddress;
+            bme680.readByte = async function (cmdAddress, length) {
+                let cmdResult;
+                if (cmdAddress == constants.CHIP_ID_ADDR) {
+                    chipIdAddressRead = cmdAddress;
+                    cmdResult = constants.CHIP_ID;
+                } else {
+                    chipVariantAddressRead = cmdAddress;
+                    cmdResult = constants.VARIANT_LOW;
+                }
                 lengthRead = length;
-                return constants.CHIP_ID;
+                return cmdResult;
             };
             bme680.softReset = async () => {
                 softResetTriggered = true;
@@ -187,7 +194,8 @@ describe('Bme680', function () {
             await bme680.initialize();
 
             // Assert
-            assert.equal(constants.CHIP_ID_ADDR, chipIdAddressRead);
+            assert.equal(chipIdAddressRead, constants.CHIP_ID_ADDR);
+            assert.equal(chipVariantAddressRead, constants.CHIP_VARIANT_ADDR);
             assert.equal(1, lengthRead);
             assert.isTrue(softResetTriggered);
             assert.equal(constants.SLEEP_MODE, powerModeSet);
@@ -196,7 +204,97 @@ describe('Bme680', function () {
             assert.equal(constants.OS_4X, pressureOversampleSet);
             assert.equal(constants.OS_8X, temperatureOversampleSet);
             assert.equal(constants.FILTER_SIZE_3, filterSet);
-            assert.equal(constants.ENABLE_GAS_MEAS, gasStatusSet);
+            assert.equal(constants.ENABLE_GAS_MEAS_LOW, gasStatusSet);
+            assert.equal(0, tempOffsetSet);
+            assert.isTrue(sensorDataGet);
+            assert.equal(320, gasHeaterTemperatureSet);
+            assert.equal(150, gasHeaterDurationSet);
+            assert.equal(0, gasHeaterProfileSelected);
+
+        });
+
+        it('Check that all initialization methods are called - bme688', async function () {
+            // Prepare
+            let chipIdAddressRead, chipVariantAddressRead, lengthRead, softResetTriggered, powerModeSet, calibrationDataGet;
+            let humidityOversampleSet, pressureOversampleSet, temperatureOversampleSet, filterSet;
+            let gasStatusSet, tempOffsetSet, sensorDataGet, gasHeaterTemperatureSet, gasHeaterDurationSet, gasHeaterProfileSelected;
+
+
+            Bme680.__set__("i2c", {
+                openSync: function () {
+                    return {};
+                }
+            });
+            const bme680 = new Bme680();
+
+            bme680.readByte = async function (cmdAddress, length) {
+                let cmdResult;
+                if (cmdAddress == constants.CHIP_ID_ADDR) {
+                    chipIdAddressRead = cmdAddress;
+                    cmdResult = constants.CHIP_ID;
+                } else {
+                    chipVariantAddressRead = cmdAddress;
+                    cmdResult = constants.VARIANT_HIGH;
+                }
+                lengthRead = length;
+                return cmdResult;
+            };
+            bme680.softReset = async () => {
+                softResetTriggered = true;
+                return {};
+            };
+            bme680.setPowerMode = async (powerMode) => {
+                powerModeSet = powerMode;
+            };
+            bme680.getCalibrationData = async () => {
+                calibrationDataGet = true;
+            };
+            bme680.setHumidityOversample = async (humidityOversample) => {
+                humidityOversampleSet = humidityOversample;
+            };
+            bme680.setPressureOversample = async (pressureOversample) => {
+                pressureOversampleSet = pressureOversample;
+            };
+            bme680.setTemperatureOversample = async (temperatureOversample) => {
+                temperatureOversampleSet = temperatureOversample;
+            };
+            bme680.setFilter = async (filter) => {
+                filterSet = filter;
+            };
+            bme680.setGasStatus = async (gasStatus) => {
+                gasStatusSet = gasStatus;
+            };
+            bme680.setTempOffset = async (tempOffset) => {
+                tempOffsetSet = tempOffset;
+            };
+            bme680.getSensorData = async () => {
+                sensorDataGet = true;
+            };
+            bme680.setGasHeaterTemperature = async (gasHeaterTemperature) => {
+                gasHeaterTemperatureSet = gasHeaterTemperature;
+            };
+            bme680.setGasHeaterDuration = async (gasHeaterDuration) => {
+                gasHeaterDurationSet = gasHeaterDuration;
+            };
+            bme680.selectGasHeaterProfile = async (gasHeaterProfile) => {
+                gasHeaterProfileSelected = gasHeaterProfile;
+            };
+
+            // Act
+            await bme680.initialize();
+
+            // Assert
+            assert.equal(chipIdAddressRead, constants.CHIP_ID_ADDR);
+            assert.equal(chipVariantAddressRead, constants.CHIP_VARIANT_ADDR);
+            assert.equal(1, lengthRead);
+            assert.isTrue(softResetTriggered);
+            assert.equal(constants.SLEEP_MODE, powerModeSet);
+            assert.isTrue(calibrationDataGet);
+            assert.equal(constants.OS_2X, humidityOversampleSet);
+            assert.equal(constants.OS_4X, pressureOversampleSet);
+            assert.equal(constants.OS_8X, temperatureOversampleSet);
+            assert.equal(constants.FILTER_SIZE_3, filterSet);
+            assert.equal(constants.ENABLE_GAS_MEAS_HIGH, gasStatusSet);
             assert.equal(0, tempOffsetSet);
             assert.isTrue(sensorDataGet);
             assert.equal(320, gasHeaterTemperatureSet);
@@ -232,6 +330,43 @@ describe('Bme680', function () {
                 assert.equal(constants.CHIP_ID_ADDR, chipIdAddressRead);
                 assert.equal(1, lengthRead);
                 assert.equal('BME680 Not Found. Invalid CHIP ID: 0', err.message);
+            }
+        });
+
+        it('Check that the chip variant id is validated', async function () {
+            // Prepare
+            let chipIdAddressRead, lengthRead, chipVariantAddressRead;
+
+            Bme680.__set__("i2c", {
+                openSync: function () {
+                    return {};
+                }
+            });
+            const bme680 = new Bme680();
+
+            bme680.readByte = async function (cmdAddress, length) {
+                let cmdResult;
+                if (cmdAddress == constants.CHIP_ID_ADDR) {
+                    chipIdAddressRead = cmdAddress;
+                    cmdResult = constants.CHIP_ID;
+                } else {
+                    chipVariantAddressRead = cmdAddress;
+                    cmdResult = 0xFF;
+                }
+                lengthRead = length;
+                return cmdResult;
+            };
+
+            // Act
+            try {
+                await bme680.initialize();
+            }
+            catch (err) {
+                // Assert
+                assert.equal(chipIdAddressRead, constants.CHIP_ID_ADDR);
+                assert.equal(chipVariantAddressRead, constants.CHIP_VARIANT_ADDR);
+                assert.equal(lengthRead, 1);
+                assert.equal(err.message, 'BME680 Invalid chip variant: 255');
             }
         });
     });
