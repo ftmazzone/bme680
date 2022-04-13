@@ -521,6 +521,9 @@ describe('Bme680', function () {
 
             let powerModeSet;
             const bme680 = new Bme680();
+            bme680.chip_variant = constants.VARIANT_LOW;
+            bme680.bme680Data.chip_id=constants.CHIP_ID;
+            bme680.bme680Data.chip_variant = bme680.chip_variant ;
             bme680.setPowerMode = async (powerMode) => {
                 powerModeSet = powerMode;
             };
@@ -614,7 +617,9 @@ describe('Bme680', function () {
 
             let powerModeSet;
             const bme680 = new Bme680();
-            bme680.chip_variant = 0x01;
+            bme680.chip_variant = constants.VARIANT_HIGH;
+            bme680.bme680Data.chip_id=constants.CHIP_ID;
+            bme680.bme680Data.chip_variant = bme680.chip_variant ;
             bme680.setPowerMode = async (powerMode) => {
                 powerModeSet = powerMode;
             };
@@ -680,7 +685,7 @@ describe('Bme680', function () {
                 ambient_temperature: 2414,
                 data:
                 {
-                    status: 48, heat_stable: true, gas_index: 0, meas_index: 0, temperature: 24.14, pressure: 1008.8, humidity: 49.072, gas_resistance: 1850.91053748232
+                    status: 0, heat_stable: false, gas_index: 0, meas_index: 0, temperature: 24.14, pressure: 1008.8, humidity: 49.072, gas_resistance: 102400000
                 },
                 calibration_data: {
                     par_h1: 809, par_h2: 1004, par_h3: 0, par_h4: 45, par_h5: 20, par_h6: 120, par_h7: -100, par_gh1: -33, par_gh2: -8557, par_gh3: 18, par_t1: 26136, par_t2: 26591, par_t3: 3, par_p1: 36266, par_p2: -10358, par_p3: 88, par_p4: 6457, par_p5: -41, par_p6: 30, par_p7: 43, par_p8: -2742, par_p9: -2558, par_p10: 30, t_fine: 123596, res_heat_range: 1, res_heat_val: 47, range_sw_err: 0
