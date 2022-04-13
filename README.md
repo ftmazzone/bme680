@@ -25,8 +25,7 @@ npm install bme680-sensor
 
 ### BME688 support
 
-The changes in the Pimoroni Python library regarding the BME688 variant have been backported to this library. The variant is automatically detected by retrieving it from the I2C address and a different gas measurement calulcation
-is used.
+The changes in the Pimoroni Python library regarding the BME688 variant have been backported to this library. The variant is automatically detected by retrieving it from the I2C address and a different gas measurement calculation is used.
 
 ## Available Methods
 
