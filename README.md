@@ -11,7 +11,7 @@ Node.js module for controlling Bosch Sensortec [BME680](https://www.bosch-sensor
 ## Installation
 
 ```sh
-npm install github:CHH/bme680
+npm install bme680-sensor
 ```
 
 ### Wiring
